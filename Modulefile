@@ -1,5 +1,5 @@
 name    'dprince/qpid'
-version '1.0.1'
+version '1.0.2'
 source 'git://github.com/dprince/puppet-qpid.git'
 author 'Dan Prince <dprince@redhat.com>'
 license 'Apache'
