@@ -23,6 +23,7 @@ class qpid::server(
   $ssl_ca = '/etc/ipa/ca.crt',
   $ssl_cert = undef,
   $ssl_key = undef,
+  $ssl_database_password = undef,
   $freeipa = false
 ) {
 
@@ -64,14 +65,16 @@ class qpid::server(
   }
 
   if $ssl == true {
+    if $ssl_database_password == undef {
+      fail('ssl_database_passowrd must be set')
+    }
     package { $ssl_package_name:
       ensure => $ssl_package_ensure
     }
     nssdb::create {"qpidd":
       owner_id => 'qpidd',
       group_id => 'qpidd',
-      # FIXME, where can random password come from?
-      password => 'password',
+      password => $ssl_database_password,
       cacert => $ssl_ca,
     }
     if $freeipa == true {
