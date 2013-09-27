@@ -69,14 +69,19 @@ class qpid::server(
       fail('ssl_database_passowrd must be set')
     }
     package { $ssl_package_name:
-      ensure => $ssl_package_ensure
+      ensure => $ssl_package_ensure,
+      before => File['/etc/pki/qpidd'],
     }
     nssdb::create {"qpidd":
       owner_id => 'qpidd',
       group_id => 'qpidd',
+      basedir => '/etc/pki',
       password => $ssl_database_password,
       cacert => $ssl_ca,
     }
+
+    Nssdb::Create['qpidd'] ~> Service['qpidd']
+
     if $freeipa == true {
       certmonger::request_ipa_cert {"qpidd":
         seclib => "nss",
