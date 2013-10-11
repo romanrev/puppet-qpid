@@ -70,12 +70,11 @@ class qpid::server(
     }
     package { $ssl_package_name:
       ensure => $ssl_package_ensure,
-      before => File['/etc/pki/qpidd'],
+      before => Nssdb::Create['qpidd'],
     }
     nssdb::create {"qpidd":
       owner_id => 'qpidd',
       group_id => 'qpidd',
-      basedir => '/etc/pki',
       password => $ssl_database_password,
       cacert => $ssl_ca,
     }
