@@ -8,6 +8,7 @@ class qpid::server(
   $service_name = 'qpidd',
   $service_ensure = running,
   $service_enable = true,
+  $manage_service = true,
   $port = '5672',
   $max_connections = '65535',
   $worker_threads = '17',
@@ -80,7 +81,9 @@ class qpid::server(
       cacert => $ssl_ca,
     }
 
-    Nssdb::Create['qpidd'] ~> Service['qpidd']
+    if $manage_service {
+      Nssdb::Create['qpidd'] ~> Service[$service_name]
+    }
 
     if $freeipa == true {
       certmonger::request_ipa_cert {"qpidd":
@@ -105,14 +108,19 @@ class qpid::server(
       owner => 'qpidd',
       group => 'qpidd',
       mode => 644,
-      notify => Service[$service_name]
+    }
+
+    if $manage_service {
+      File[$log_to_file] ~> Service[$service_name]
     }
   }
 
-  service { $service_name:
-    ensure => $service_ensure,
-    enable => $service_enable,
-    subscribe => [Package[$package_name], File[$config_file]]
+  if $manage_service {
+      service { $service_name:
+        ensure => $service_ensure,
+        enable => $service_enable,
+        subscribe => [Package[$package_name], File[$config_file]]
+      }
   }
 
 }
