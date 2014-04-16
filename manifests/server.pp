@@ -70,9 +70,11 @@ class qpid::server(
     if $ssl_database_password == undef {
       fail('ssl_database_passowrd must be set')
     }
-    package { $ssl_package_name:
-      ensure => $ssl_package_ensure,
-      before => Nssdb::Create['qpidd'],
+    if $::operatingsystem == 'Fedora' and is_integer($::operatingsystemrelease) and $::operatingsystemrelease <= 19 {
+      package { $ssl_package_name:
+        ensure => $ssl_package_ensure,
+        before => Nssdb::Create['qpidd'],
+      }
     }
     nssdb::create {"qpidd":
       owner_id => 'qpidd',
