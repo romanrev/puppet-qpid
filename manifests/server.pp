@@ -18,6 +18,7 @@ class qpid::server(
   $log_to_file = 'UNSET',
   $clustered = false,
   $cluster_mechanism = 'ANONYMOUS',
+  $data_dir = '/var/lib/qpidd',
   $ssl = false,
   $ssl_package_name = 'qpid-cpp-server-ssl',
   $ssl_package_ensure = present,
