@@ -10,7 +10,7 @@ class qpid::server(
   $service_enable = true,
   $manage_service = true,
   $port = '5672',
-  $max_connections = '65535',
+  $max_connections = '65530',
   $worker_threads = '17',
   $connection_backlog = '10',
   $auth = 'no',
