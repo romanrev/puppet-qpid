@@ -11,7 +11,7 @@ worker-threads=<%= @worker_threads %>
 connection-backlog=<%= @connection_backlog %>
 auth=<%= @auth %>
 realm=<%= @realm %>
-data-dir=<% @data_dir %>
+data-dir=<%= @data_dir %>
 <% if @clustered == true %>
 <%= @mechanism_option %>=<%= @cluster_mechanism %>
 <% end %>
