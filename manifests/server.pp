@@ -86,6 +86,7 @@ class qpid::server(
       group_id => 'qpidd',
       password => $ssl_database_password,
       cacert => $ssl_ca,
+      require => Package[$package_name]
     }
 
     if $manage_service {
@@ -115,6 +116,7 @@ class qpid::server(
       owner => 'qpidd',
       group => 'qpidd',
       mode => 644,
+      require => Package[$package_name]
     }
 
     if $manage_service {
