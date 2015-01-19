@@ -72,7 +72,7 @@ class qpid::server(
 
   if $ssl == true {
     if $ssl_database_password == undef {
-      fail('ssl_database_passowrd must be set')
+      fail('ssl_database_password must be set')
     }
     if (( $::operatingsystem == 'Fedora' and
         is_integer($::operatingsystemrelease) and
