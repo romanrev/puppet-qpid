@@ -20,9 +20,9 @@ log-to-file=<%= @log_to_file %>
 <% end %>
 <% if @ssl == true %>
 require-encryption=yes
-ssl-require-client-authentication=no
-ssl-cert-db=/etc/pki/qpidd
-ssl-cert-password-file=/etc/pki/qpidd/password.conf
+ssl-require-client-authentication=<%= @ssl_client_auth %>
+ssl-cert-db=<%= @ssl_cert_db %>
+ssl-cert-password-file=<%= @ssl_cert_password_file %>
 ssl-cert-name=broker
 ssl-port=<%= @ssl_port %>
 <% end %>

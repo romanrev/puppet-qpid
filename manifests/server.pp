@@ -26,7 +26,10 @@ class qpid::server(
   $ssl_ca = '/etc/ipa/ca.crt',
   $ssl_cert = undef,
   $ssl_key = undef,
-  $ssl_database_password = undef,
+  $ssl_database_password = '/etc/pki/qpidd',
+  $ssl_cert_password_file = '/etc/pki/qpidd/password.conf',
+  $ssl_cert_db = /etc/pki/qpidd',
+  $ssl_client_auth = 'yes',
   $freeipa = false
 ) {
 
