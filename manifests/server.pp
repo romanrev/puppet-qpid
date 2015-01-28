@@ -19,6 +19,11 @@ class qpid::server(
   $clustered = false,
   $cluster_mechanism = 'ANONYMOUS',
   $data_dir = '/var/lib/qpidd',
+  $nss_db_owner = 'qpidd',
+  $nss_db_group = 'qpidd',
+  $nss_db_mode = 0660,
+  $nss_basedir = '/etc/pki/qpidd',
+  $nss_dbname = undef,
   $ssl = false,
   $ssl_package_name = 'qpid-cpp-server-ssl',
   $ssl_package_ensure = present,
@@ -26,9 +31,8 @@ class qpid::server(
   $ssl_ca = '/etc/ipa/ca.crt',
   $ssl_cert = undef,
   $ssl_key = undef,
-  $ssl_database_password = '/etc/pki/qpidd',
+  $ssl_database_password = undef,
   $ssl_cert_password_file = '/etc/pki/qpidd/password.conf',
-  $ssl_cert_db = '/etc/pki/qpidd',
   $ssl_client_auth = 'yes',
   $freeipa = false
 ) {
@@ -39,6 +43,8 @@ class qpid::server(
   validate_re($worker_threads, '\d+')
   validate_re($connection_backlog, '\d+')
   validate_re($auth, '^(yes$|no$)')
+
+  $ssl_cert_db = "$nss_basedir/$nss_dbname"
 
   package { $package_name:
     ensure => $package_ensure
@@ -85,10 +91,15 @@ class qpid::server(
       }
     }
     nssdb::create {"qpidd":
-      owner_id => 'qpidd',
-      group_id => 'qpidd',
+      owner_id => $nss_db_owner,
+      group_id => $nss_db_group,
+      mode => $nss_db_mode,
       password => $ssl_database_password,
+      password_file => $ssl_cert_password_file,
       cacert => $ssl_ca,
+      catrust => "TCu,Cu,Tuw",
+      basedir => $nss_basedir,
+      dbname => $nss_dbname,
       require => Package[$package_name]
     }
 
@@ -105,6 +116,9 @@ class qpid::server(
     } elsif $ssl_cert != undef and $ssl_key != undef {
       nssdb::add_cert_and_key{"qpidd":
         nickname=> 'broker',
+        dbname => $nss_dbname,
+        password_file => $ssl_cert_password_file,
+        basedir => $nss_basedir,
         cert => $ssl_cert,
         key  => $ssl_key,
       }
