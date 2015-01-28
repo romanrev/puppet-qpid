@@ -122,7 +122,15 @@ class qpid::server(
         cert => $ssl_cert,
         key  => $ssl_key,
       }
-    } else {
+    } elsif $ssl_cert != undef and $ssl_key == undef {
+      nssdb::add_cert{"qpidd":
+        nickname=> 'broker',
+        dbname => $nss_dbname,
+        basedir => $nss_basedir,
+        cert => $ssl_cert,
+      }
+    }
+    else {
       fail('Missing cert or key')
     }
   }
